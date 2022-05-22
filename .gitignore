@@ -1,0 +1,8 @@
+# user-specific config
+config.ini
+mappings.json
+
+# Any generated artifacts.
+*.csv
+
+.venv/
