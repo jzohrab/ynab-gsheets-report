@@ -17,6 +17,12 @@ I only care about "Starbucks", so I do a manual map.
 
 It's not a great solution, but it's good enough.
 
+**NOTE: I just read a bit more about this, and apparently YNAB has a
+feature that allows for automatic renaming based on some rules ... USE
+THAT INSTEAD!  I'll update this code (perhaps) when I try out that
+feature for myself.**
+
+
 # Install
 
 ```
