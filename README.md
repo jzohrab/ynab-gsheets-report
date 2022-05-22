@@ -64,7 +64,19 @@ deactivate
 When it runs, it outputs a list of "Unmapped" entries so that you can
 add them to your mappings.json.
 
-# Thanks
+# Cron job
+
+If you have a mac, and are feeling adventursome, you could try setting up a cron job with the bash file in this repo:
+
+`crontab -e` starts the editor, and add, e.g.:
+
+```
+0 8 * * * pushd /path/to/this/dir && ./update-gsheets.sh && popd >> /tmp/cron.out 2>&1
+```
+
+Then after a few days, when you're sure everything works, remove the `>> /tmp/cron.out 2>&1` and `rm /tmp/cron.out`
+
+# Thanks ...
 
 ... to https://github.com/danaimone/ynab_pandas_demo for the starting
 point.
