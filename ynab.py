@@ -5,6 +5,8 @@ import pandas as pd
 import json
 import sys
 from datetime import datetime
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 mappings = None
 with open('mappings.json') as infile:
@@ -24,7 +26,7 @@ def mapped_payee_name(s):
     return mappings.get(s, s)
 
 
-def main(config, args):
+def get_dataframe(config, args):
 
     session = requests.Session()
     header = {'Authorization': f"Bearer {config['CONFIG']['token']}"}
@@ -106,10 +108,45 @@ def main(config, args):
     ret = df.groupby(cols)['amount'].sum().reset_index()
     ret = ret.sort_values(by = ['category_name', 'amount'], ascending=[True,False])
 
+    return ret
+
+
+def upload_to_gsheets(config, args, df):
+
+    scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
+
+    jfile = config['CONFIG']['googleCreds']
+    creds = ServiceAccountCredentials.from_json_keyfile_name(jfile, scope)
+
+    client = gspread.authorize(creds)
+
+    sheetname = config['CONFIG']['sheetName']
+    sheet = client.open(sheetname)
+
+    sheet_instance = sheet.get_worksheet(0)
+    sheet_instance.clear()
+
+    df.reset_index()
+
+    # For getting list plus headings for insert:
+    # https://stackoverflow.com/questions/49176376/
+    #   pandas-dataframe-to-lists-of-lists-including-headers
+    a = df.columns.values.tolist()
+    b = df.values.tolist()
+    b.insert(0, a)
+
+    sheet_instance.update(b)
+
+
+def main(config, args):
+    ret = get_dataframe(config, args)
     if (args.output):
         ret.to_csv(args.output, index=False)
     else:
         print(ret)
+        print('Upload to gsheets...')
+        upload_to_gsheets(config, args, ret)
+        print('done upload')
 
 if __name__ == '__main__':
 
@@ -122,7 +159,7 @@ if __name__ == '__main__':
         default = first_of_month)
     parser.add_argument(
         "--output",
-        help="Path to output csv file"
+        help="Path to output csv file.  If not present, upload to configured google sheet"
     )
     args = parser.parse_args()
 

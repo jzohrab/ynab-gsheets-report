@@ -2,3 +2,7 @@
 
 token = YourTokenHere
 budgetName = NameOfYourBudgetHere
+googleCreds = path/to/creds.json
+
+# Don't forget to share your google sheet with the google creds file email account!!!
+sheetName = Sheet name here
