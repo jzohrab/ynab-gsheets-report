@@ -1,6 +1,21 @@
-# YNAB reporter
+# YNAB gsheets reporter
 
-Gets stuff from ynab
+Gets transactions after a given start date, or defaults from the first
+of the current month, "normalizes" the payees using a supplied
+`mappings.json` file, and then exports a summary to a google sheet.
+
+The "normalizing" was necessary for me, because different locations in
+a chain will use their particular name as the "payee".  For example, Starbucks has
+
+```
+STARBUCKS 00122        VICTORIA      BC
+STARBUCKS 00134        DUNCAN        BC
+STARBUCKS COFFEE #2038 VICTORIA      BC
+```
+
+I only care about "Starbucks", so I do a manual map.
+
+It's not a great solution, but it's good enough.
 
 # Install
 
@@ -46,6 +61,10 @@ python ynab.py
 deactivate
 ```
 
+When it runs, it outputs a list of "Unmapped" entries so that you can
+add them to your mappings.json.
+
 # Thanks
 
-to https://github.com/danaimone/ynab_pandas_demo/blob/master/ynab.py for the starting point.
+... to https://github.com/danaimone/ynab_pandas_demo for the starting
+point.

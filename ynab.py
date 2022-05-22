@@ -13,18 +13,7 @@ with open('mappings.json') as infile:
     mappings = json.load(infile)
 
 def mapped_payee_name(s):
-
-    if (s.find('AMAZON') != -1):
-        return 'Amazon'
-    if (s.find("MCDONALD'S") != -1):
-        return "McD's"
-    if (s.find("MCDONALD&apos;S") != -1):
-        return "McD's"
-    if (s.find("STARBUCKS") != -1):
-        return "Starbucks"
-
     return mappings.get(s, s)
-
 
 def get_dataframe(config, args):
 
@@ -89,7 +78,7 @@ def get_dataframe(config, args):
     unmapped.sort()
     for u in unmapped:
         orig = f"\"{u}\"".ljust(50)
-        print(f"{orig}: \"\",")
+        print(f"{orig}: \"{u}\",")
     print()
 
     def shorten(s, maxlen):
