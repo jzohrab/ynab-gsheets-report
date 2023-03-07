@@ -47,12 +47,35 @@ def get_transactions(config, args):
         return t['payee_name'] == sought and t['memo'] == ''
 
     txns = response["data"]["transactions"]
-    txns = [
-        t for t in txns
+
+    patchdata = [
+        {
+            'id': t['id'],
+            'account_id': t['account_id'],
+            'date': t['date'],
+            'amount': t['amount'],
+            'memo': t['payee_name']
+        }
+        for t in txns
         if needs_memo(t)
     ]
-    for t in txns:
-        print(t)
+    # print(patchdata)
+    payload = {
+        'transactions': patchdata
+    }
+
+    patchurl = f'https://api.youneedabudget.com/v1/budgets/{budget_id}/transactions'
+    print(patchurl)
+    print(json.dumps(params, indent=4, sort_keys=True))
+
+    if len(patchdata) > 0:
+        print('posting...')
+        response = session.patch(patchurl, json = payload)
+        data = response.json()
+        print('\n\nresponse:')
+        print(data)
+    else:
+        print('nothing to update')
 
 
 def main(config, args):
